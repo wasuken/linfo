@@ -1,12 +1,15 @@
 import Head from "next/head";
 import { useState, useEffect } from "react";
-import { Line, Box } from "@/components/Styles";
+import { Line, Box, EditBtnArea } from "@/components/Styles";
 import { Button, Container } from "react-bootstrap";
+import { BiEdit } from "react-icons/bi";
+import { parseISO, format } from "date-fns";
 
 interface WebServiceStatus {
   id: string;
   web_service_id: string;
   status: boolean;
+  createdAt: string;
 }
 
 interface WebService {
@@ -32,6 +35,14 @@ export default function Home() {
       }
     });
   }
+  function fetchAllSync() {
+    fetch(`/api/sync`).then((res) => {
+      if (res.status === 200) {
+        console.log("success");
+        fetchWebService();
+      }
+    });
+  }
   useEffect(() => {
     fetchWebService();
   }, []);
@@ -44,10 +55,14 @@ export default function Home() {
       </Head>
       <main>
         <Container>
+          <Button onClick={() => fetchAllSync()}>All Sync</Button>
           {webServices.map((srv, i) => (
             <div key={i}>
               <Box>
                 <h3>
+                  <EditBtnArea href={`/edit/${srv?.id}`}>
+                    <BiEdit />
+                  </EditBtnArea>
                   <a href={srv.url} target="_blank">
                     {srv.name}
                   </a>
@@ -55,6 +70,11 @@ export default function Home() {
                 <p>{srv.description}</p>
                 <h4>
                   <Line>
+                    <p>
+                      <Button onClick={() => fetchUrlCheck(srv.id)}>
+                        Sync
+                      </Button>
+                    </p>
                     <p>status</p>
                     <div>
                       {srv.statusList[0]?.status === true && (
@@ -64,11 +84,14 @@ export default function Home() {
                         <p style={{ color: "red" }}>red</p>
                       )}
                     </div>
-                    <p>
-                      <Button onClick={() => fetchUrlCheck(srv.id)}>
-                        Sync
-                      </Button>
-                    </p>
+                  </Line>
+                  <Line>
+                    最終Sync:
+                    {srv.statusList[0] &&
+                      format(
+                        new Date(srv.statusList[0].createdAt),
+                        "yyyy-MM-dd hh:mm:ss"
+                      )}
                   </Line>
                 </h4>
               </Box>

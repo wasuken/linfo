@@ -1,22 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container, Button, Form } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { ButtonLine } from "@/components/Styles";
 
 export default function Home() {
   const router = useRouter();
+  const id = router.query.id;
   const [name, setName] = useState<string>("");
   const [url, setUrl] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
-  function postService() {
+  function putService() {
+    if (!id) return;
     const body = JSON.stringify({
       url,
       desc,
       name,
     });
     console.log(body);
-    fetch(`/api/websrvs`, {
-      method: "POST",
+    fetch(`/api/websrv/${id}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
@@ -25,15 +27,25 @@ export default function Home() {
         description: desc,
         name,
       }),
-    }).then((res) => {
-      if (res.status === 200) {
-        console.log("success");
-        setUrl("");
-        setName("");
-        setDesc("");
-      }
+    }).then((_res) => {
+      console.log("success");
+      router.push({ pathname: "/" });
     });
   }
+  function fetchEditData() {
+    if (!id) return;
+    fetch(`/api/websrv/${id}`)
+      .then((res) => res.json())
+      .then((js) => {
+        console.log(js);
+        setUrl(js?.url);
+        setName(js?.name);
+        setDesc(js?.description);
+      });
+  }
+  useEffect(() => {
+    fetchEditData();
+  }, [id]);
   return (
     <Container>
       <Form.Group className="mb-3" controlId="name">
@@ -64,7 +76,7 @@ export default function Home() {
         />
       </Form.Group>
       <ButtonLine>
-        <Button onClick={() => postService()}>post</Button>
+        <Button onClick={() => putService()}>put</Button>
         <Button onClick={() => router.back()}>cancel</Button>
       </ButtonLine>
     </Container>

@@ -7,14 +7,23 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const { id } = req.query;
+  if (typeof id !== "string") {
+    res.status(400).json({ msg: "error" });
+    return;
+  }
   if (req.method === "GET") {
-    const { id } = req.query;
     const srv = await client.webService.findFirst({
       where: {
         id,
       },
     });
-    const result = await fetch(srv?.url);
+    const url = srv?.url;
+    if (!url) {
+      res.status(400).json({ msg: "none url" });
+      return;
+    }
+    const result = await fetch(url);
     const status = result.status === 200;
     await client.webServiceStatus.create({
       data: {

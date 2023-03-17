@@ -1,5 +1,17 @@
 import styled from "styled-components";
 
+export const ButtonLine = styled.div`
+  display: flex;
+  width: 200px;
+  gap: 30px;
+`;
+
+export const EditBtnArea = styled.a`
+  cursor: pointer;
+  margin-right: 5px;
+  color: black;
+`;
+
 export const Button = styled.button`
   color: #fff;
   background-color: #eb6100;

@@ -8,11 +8,20 @@ local info
 
 ## サービス名を大きくする
 
+h3 へ
+
+## Sync ボタンを左へ、そして最終取得時間を表示
+
+date-fns を追加
+
 ## All Sync Button
 
 サービス一覧でそれぞれ Sync ボタンを押すのではなく
 
 一括で Sync するボタンを作る
+
+1. ボタンを配置する
+2. All Sync API を実装する
 
 ## Edit 機能
 
