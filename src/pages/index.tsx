@@ -47,11 +47,11 @@ export default function Home() {
           {webServices.map((srv, i) => (
             <div key={i}>
               <Box>
-                <p>
+                <h3>
                   <a href={srv.url} target="_blank">
                     {srv.name}
                   </a>
-                </p>
+                </h3>
                 <p>{srv.description}</p>
                 <h4>
                   <Line>
