@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { useState, useEffect } from "react";
 import { Line, Box, EditBtnArea } from "@/components/Styles";
 import { Button, Container } from "react-bootstrap";
@@ -27,7 +26,8 @@ export default function Home() {
       .then((res) => res.json())
       .then((js) => setWebServices(js));
   }
-  function fetchUrlCheck(id: string) {
+  function fetchUrlCheck(id: string | null) {
+    if (!id) return;
     fetch(`/api/watch/${id}`).then((res) => {
       if (res.status === 200) {
         console.log("success");
@@ -48,11 +48,6 @@ export default function Home() {
   }, []);
   return (
     <>
-      <Head>
-        <title>Create Next App</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <main>
         <Container>
           <Button onClick={() => fetchAllSync()}>All Sync</Button>
